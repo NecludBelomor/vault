@@ -1,0 +1,44 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  #  - name: vgtest
+    #    box: ubuntu/bionic64
+    #    box: centos/7
+    #    instance_raw_config_args:
+    #    - "vm.network 'forwarded_port', guest: 80, host: 8088"
+  - name: centos7-1
+    box: centos/7
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 192.168.10.10
+    groups:
+      - vpn
+  - name: centos7-2
+    box: centos/7
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 192.168.10.20
+    groups:
+      - vpn
+  - name: centos7-3
+    box: centos/7
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 192.168.10.30
+    groups:
+      - vpn        
+provisioner:
+  name: ansible
+  list:
+    name: ansible-lint
+verifier:
+  name: testinfra

@@ -1,0 +1,43 @@
+---
+- name: Add repository
+  yum_repository:
+    name: hashirop
+    description: hashicorp repo
+    baseurl: https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable
+    gpgcheck: no
+
+- name: install consul and vault
+  yum:
+    name: 
+      - consul
+      - vault
+    state: present
+
+- name: put configs
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: /etc/consul.d/config.json
+    owner: consul
+    group: consul
+    mode: '0644'
+
+- name: put configs
+  ansible.builtin.template:
+    src: vault_server.hcl.j2
+    dest: /etc/vault.d/vault_server.hcl
+    owner: vault
+    group: vault
+    mode: '0644'      
+
+- name: start consul
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: consul
+
+- name: start vault
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: vault
+

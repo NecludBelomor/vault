@@ -1,0 +1,23 @@
+---
+- name: Disable SELinux
+  hosts: all
+  tasks:
+    - name: disable selinux
+      selinux:
+        state: disabled
+      notify:
+        - reboot server
+  become: yes
+
+  handlers:
+    - name: reboot server
+      reboot:
+        reboot_timeout: 60
+
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include vault"
+      include_role:
+        name: "vault"
+  become: yes

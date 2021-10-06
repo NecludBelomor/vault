@@ -1,0 +1,41 @@
+---
+# tasks file for vault
+- name: Create consul group
+  group:
+    name: consul
+    state: present
+    system: true
+
+- name: Create consul user
+  user:
+    name: consul
+    group: consul
+    shell: /bin/false
+    home: /etc/consul/
+    state: present
+
+- name: Create consul dir
+  file:
+    state: directory
+    path: "{{ consul_base_directory }}"
+    owner: consul
+    mode: 0755
+
+- name: Get consul binary
+  get_url:
+    url: "{{ hostvars[inventory_hostname].consul_src_url }}"
+    dest: /tmp
+    checksum: sha256:{{ hostvars[inventory_hostname].consul_src_hash }}
+
+- name: Unzip consul binary
+  unarchive:
+    src: /tmp/{{ hostvars[inventory_hostname].consul_src_file }}
+    dest: "{{ consul_base_directory }}"
+    remote_src: true
+    mode: 0744
+
+- name: Create symlink
+  file:
+    src: "{{ consul_base_directory }}/consul"
+    dest: /usr/local/bin/consul
+    state: link

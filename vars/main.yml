@@ -1,0 +1,4 @@
+---
+# vars file for vault
+consul_base_directory: /var/consul/data
+#consul_src_url: 
